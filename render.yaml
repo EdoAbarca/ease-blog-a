@@ -1,0 +1,37 @@
+# render.yaml (A modificar)
+
+services:
+  - type: web
+    name: django-backend
+    env: python
+    repo: https://github.com/your-username/your-repo-name
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py migrate
+    startCommand: gunicorn your_project_name.wsgi
+    envVars:
+      - key: DATABASE_URL
+        value: YOUR_DATABASE_URL
+      - key: DJANGO_SECRET_KEY
+        value: YOUR_SECRET_KEY
+      - key: ALLOWED_HOSTS
+        value: YOUR_ALLOWED_HOSTS
+
+  - type: static
+    name: vite-frontend
+    repo: https://github.com/your-username/your-repo-name
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://django-backend.onrender.com/api
+
+databases:
+  - name: my-database
+    type: postgresql
+    user: YOUR_DB_USER
+    password: YOUR_DB_PASSWORD
+    database: YOUR_DB_NAME
+    region: oregon
