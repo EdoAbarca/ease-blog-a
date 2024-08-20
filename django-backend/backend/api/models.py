@@ -9,6 +9,32 @@ class Role(models.Model):
     def __str__(self):
         return self.rolename
 
+class Article(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    author = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    created = models.DateTimeField(default=timezone.now)
+    visits = models.IntegerField(default=0)
+
+class Comment(models.Model):
+    id = models.AutoField(primary_key=True)
+    content = models.TextField()
+    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    author = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    created = models.DateTimeField(default=timezone.now)
+
+
+class Category(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50)
+    articles = models.ManyToManyField(Article)
+
+    def __str__(self):
+        return self.name
+
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, role=None, **extra_fields):
         if not email:

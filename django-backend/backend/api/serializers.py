@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Role
+from .models import CustomUser, Role, Article, Comment, Category
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +36,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
+class ArticleSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
+
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'content', 'author', 'created', 'visits']
+    
+class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'article', 'author', 'created']
+    
+class CategorySerializer(serializers.ModelSerializer):
+    articles = ArticleSerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'articles']
